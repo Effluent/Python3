@@ -1,0 +1,166 @@
+#!/usr/bin/python3
+# collect.py
+################################
+# Game Prep
+# Collect change and save
+################################
+
+import json
+
+stats = {
+  'x': 0,
+  'y': 0,
+  'z': 0,
+  'heading': 0,
+  'hp': 50,
+  'health': 'normal',
+  'None': 'null',
+}
+
+
+def statChart():
+  print()
+  print('Your stats currently:')
+  print('-' * 26)
+  print(' Coordinates | ', stats.get('x'), ',', stats.get('y'), ',', stats.get('z'))
+  print('-' * 26)
+  print(' Heading     | ', stats.get('heading'))
+  print('-' * 26)
+  print(' HP          | ', stats.get('hp'))
+  print('-' * 26)
+  print(' Health      | ', stats.get('health'))
+  print('-' * 26)
+  print()
+
+
+def saveState():
+  #
+  print('Do you want to save? (Yes or No)')
+  save = input().lower()
+  if save == 'yes' or save == 'y':    # test if y|yes
+    print('Enter a name for your savefile:')
+    savename = input()
+    savename = savename.lower() + '.1'
+    print('Writing Stats to file.')
+    with open(savename, 'w+') as f:
+      f.write(json.dumps(stats))    # try json.loads later
+      print('success.')
+
+
+def statChange():
+  print('Change stat? (Yes or No)')
+  statMod = input().lower()                 # .lower() convert case to lower
+  if statMod == 'no' or statMod == 'n':    # test if n|no
+    moveon = 1
+    return moveon
+  elif statMod == 'yes' or statMod == 'y':    # test if y|yes
+    print('Which stat will you change? ')
+    statSel = input().lower()               # .lower() convert case to lower
+    # below are tuples of acceptable words to determine which stat was selected.
+    cat1 = ('coordinates','coord','coords','xyz','position',)
+    cat2 = ('heading','head','face','bearing',)
+    cat3 = ('hp','hearts','heart','life',)
+    cat4 = ('health','condition','state',)
+    if statSel in cat1:
+      stat1()
+    elif statSel in cat2:
+      stat2()
+    elif statSel in cat3:
+      stat3()
+    elif statSel in cat4:
+      stat4()
+    else:
+      print('Not an available stat.')
+    moveon = 0
+    return moveon
+
+
+def stat1():
+# Coordinates
+  clist = ('x','y','z',)
+  print()
+  print('*' *12)
+  print('Coordinates are x y z separated with spaces (eample 23 -97 216).')
+  print('Enter new values:')
+  statValue = input()
+  statValue = statValue.split()
+  while len(statValue) != 3:
+    print('Bad input, try again: (example 12,3,75)')
+    statValue = input()
+    statValues = statValue.split()
+  i = 0
+  while i != 3:
+      try:
+          type(statValue[i]) (int(statValue[i])) == statValue[i]
+          i += 1
+      except:
+          print(clist[i], ' corridinate not vaild, re-enter value:')
+          statValue[i] = input()
+          i += 1
+  # change the entries in the dictionary
+  stats['x'] = statValue[0]   # forward/back coordinate
+  stats['y'] = statValue[1]   # right/left coordinate
+  stats['z'] = statValue[2]   # up/down coordinate
+
+
+def stat2():
+# Heading
+  cardinal = {
+    'n': 0,
+    'nne': 22.5,
+    'ne': 45,
+    'nee': 67.5,
+    'e': 90,
+    'ees': 112.5,
+    'se': 135,
+    'sse': 157.5,
+    's': 180,
+    'ssw': 202.5,
+    'sw': 225,
+    'sww': 247.5,
+    'w': 270,
+    'wwn': 292.5,
+    'nw': 315,
+    'nnw': 337.5,
+  }
+  print('Enter new value:  (deg or cardinal)')
+  statValue = input()
+  try:
+    type(statValue) (float(statValue)) == statValue  #TEST for float
+    stats['heading'] = statValue
+  except TypeError:
+    type(statValue) (int(statValue)) == statValue  #TEST for int
+    stats['heading'] = statValue
+  except ValueError:  #For all else as str
+    statValue.lower() in cardinal  # TEST input for cardinal
+    stats['heading'] = cardinal[statValue]
+  except:
+    print('Not a vaild entry.')
+
+
+def stat3():
+# Hit Points
+  print('Enter new value:')
+  statValue = input()
+  try:
+    type(statValue) (float(statValue)) == statValue  #TEST for float
+    stats['hp'] = statValue
+  except TypeError:
+    type(statValue) (int(statValue)) == statValue  #TEST for int
+    stats['hp'] = statValue
+  except ValueError:  #For all else as str
+    statValue.lower() in cardinal  # TEST input for cardinal
+    stats['hp'] = statValue
+  except:
+    print('Not a vaild entry.')
+
+def stat4():
+# Health
+  print('empty')
+
+moveon = 0
+while moveon != 1:
+  statChart()
+  statChange()
+  moveon = statChange()
+saveState()

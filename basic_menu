@@ -1,0 +1,164 @@
+#!/usr/bin/python3.6
+################################
+# Menu System
+# Start date 05/29/2018
+################################
+# Section 1 menu works  (06/03/2018)
+#   view = displays defualt data
+#   edit = changes default data
+#   load = reads and sets data
+#   save = writes current data to file
+################################
+# Next ncurses for a cleaner menu look
+
+#imports
+import json
+
+
+#functions
+def menu_main_screen():
+    print('*' * 26)
+    print('* Main Menu', ' ' * 12, '*')
+    print('*', ' ' * 22, '*')
+    print('* 1 - Position', ' ' * 9, '*')
+    print('* 2 - Section Two', ' ' * 6, '*')
+    print('* 3 - Section Three', ' ' * 4, '*')
+    print('*', ' ' * 22, '*')
+    print('* Exit', ' ' * 17, '*')
+    print('*', ' ' * 22, '*')
+    print('*' * 26)
+
+
+def section1_screen():
+    print('\n')
+    print('#' * 35)
+    print('# Position menu', ' ' * 17, '#')
+    print('#', ' ' * 31, '#')
+    print('# 1 - View Current Postion Values #')
+    print('# 2 - Edit Postion Values', ' ' * 7, '#')
+    print('# 3 - Load Postion Values', ' ' * 7, '#')
+    print('# 4 - Save Postion Values', ' ' * 7, '#')
+    print('#', ' ' * 31, '#')
+    print('# Q - Return to previous menu', ' ' * 3, '#')
+    print('#', ' ' * 31, '#')
+    print('#' * 35, '\n')
+
+
+def section2_screen():
+    print('\n')
+    print('@' * 26)
+    print('@ section two menu', ' ' * 5, '@')
+    print('@' * 26, '\n')
+
+
+def section3_screen():
+    print('\n')
+    print('%' * 26)
+    print('% section two menu', ' ' * 5, '%')
+    print('%' * 26, '\n')
+
+
+
+def menu_main_actions():
+    main_menu_counter = 1  #token
+    while main_menu_counter == 1:
+        menu_main_screen()
+        question = 'Type 1 , 2, 3 or Exit > '
+        response = input(question).lower()
+        answer1 = ('1', 'o', 'on', 'one')
+        answer2 = ('2', 'tw', 'two')
+        answer3 = ('3', 'th', 'thr', 'thre', 'three')
+        answer4 = ('4', 'e', 'ex', 'exi', 'exit', 'q', 'qu', 'qui', 'quit')
+        if response in (answer1):
+            section1()
+        if response in (answer2):
+            section2()
+        if response in (answer3):
+            section3()
+        if response in (answer4):
+            break
+        if response not in (answer1 + answer2 + answer3 + answer4):
+            print ('\nBad input, try again.\n   ')
+
+
+def section1():
+    section1_screen()
+    dataname = 'Position'
+    datagram = 'this is the data, 0101010111010101000101000101101010010011101010110101'
+    section1_counter = 1
+    while section1_counter == 1:
+        question = 'Continue or return to previous menu? > '
+        response = input(question).lower()
+        answer1 = ('1', 'o', 'on', 'one', 'v', 'vi', 'vie', 'view')
+        answer2 = ('2', 'tw', 'two', 'e', 'ed', 'edi', 'edit')
+        answer3 = ('3', 'th', 'thr', 'thre', 'three', 'l', 'lo', 'loa', 'load')
+        answer4 = ('4', 'f', 'fo', 'fou', 'four', 's', 'sa', 'sav', 'save')
+        answer5 = ('5', 'e', 'ex', 'exi', 'exit', 'q', 'qu', 'qui', 'quit')
+        if response in (answer1):       #View
+            print('\nYou choose View\n')
+            print('\n\t', datagram, '\n')
+        if response in (answer2):       #Edit
+            print('\nYou choose Edit\n')
+            datagram = input('Enter new positional data: ')
+            print('\n\t', datagram, '\n')
+        if response in (answer3):       #Load
+            print('\nYou choose Load\n')
+            datagram = loadState(dataname)
+            print('What we found in the file:\n')
+            print('\t', datagram, '\t\n')
+        if response in (answer4):       #Save
+            print('\nYou choose Save\n')
+            saveState(dataname, datagram)
+        if response in (answer5):       #Return
+            print('\nOut of here!\n')
+            break
+        if response not in (answer1 + answer2 + answer3 + answer4 + answer5):
+            print('\nDoes not compute, try again, punny human.\n')
+
+
+def section2():
+    section2_screen()
+    section2_counter = 1
+    while section2_counter == 1:
+        question = 'Continue or return to previous menu? > '
+        response = input(question).lower()
+        positive = ('y', 'ye', 'yes', 'ok', 'cont', 'contin', 'continue')
+        negative = ('n', 'no', 'r', 're', 'ret', 'return', 'e', 'ex', 'exi', 'exit', 'q', 'qu', 'qui', 'quit')
+        if response in (positive):
+            print('\nYeah, you like that don\'t you?\n')
+        if response in (negative):
+            print('\nOut of here!\n')
+            break
+        if response not in (positive + negative):
+            print('\nDoes not compute, try again, punny human.\n')
+
+
+def section3():
+    section3_screen()
+
+
+
+def saveState(dataname, datagram):
+  print('Save', dataname, 'data? (Yes or No)')
+  save = input().lower()
+  if save == 'yes' or save == 'y':    # test if y|yes
+    savename = dataname.lower() + '.1'
+    print('Writing data to file.')
+    with open(savename, 'w+') as f:
+      f.write(json.dumps(datagram))    # try json.loads later
+      print('success.')
+
+
+
+def loadState(dataname):
+    print('Loading', dataname, 'data ...\n')
+    filename = dataname.lower() + '.1'
+    with open(filename) as f:
+      datagrab = f.read()
+#      print('Straight from the disk, it says...\n', datagrab, '\n')
+      return datagrab
+    f.close
+
+
+menu_main_actions()
+print('\nFinished')
